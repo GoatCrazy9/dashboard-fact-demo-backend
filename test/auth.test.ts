@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { randomBytes } from 'node:crypto'
+import { getDemoCredentials } from '../src/config/env.ts'
 import {
   emitirToken,
   hashContrasena,
@@ -40,4 +41,36 @@ test('un token vencido se rechaza', () => {
     -10,
   )
   assert.throws(() => verificarToken(token, LLAVE), /TOKEN_INVALIDO/)
+})
+
+test('las credenciales demo se leen del entorno y no se versionan', () => {
+  const claves = ['ADMIN_USUARIO', 'ADMIN_CONTRASENA', 'MAESTRO_USUARIO', 'MAESTRO_CONTRASENA']
+  const originales = new Map(claves.map((clave) => [clave, process.env[clave]]))
+
+  try {
+    process.env.ADMIN_USUARIO = ' AdminDemo '
+    process.env.ADMIN_CONTRASENA = 'clave-admin-de-prueba'
+    process.env.MAESTRO_USUARIO = ' MaestroDemo '
+    process.env.MAESTRO_CONTRASENA = 'clave-maestro-de-prueba'
+
+    const credenciales = getDemoCredentials()
+    assert.deepEqual(
+      credenciales.map((credencial) => credencial.username),
+      ['admindemo', 'maestrodemo'],
+    )
+    assert.deepEqual(
+      credenciales.map((credencial) => credencial.role),
+      ['ADMIN', 'MAESTRO'],
+    )
+    assert.equal(credenciales.every((credencial) => credencial.password.length > 0), true)
+
+    delete process.env.MAESTRO_CONTRASENA
+    assert.equal(getDemoCredentials().length, 1)
+  } finally {
+    for (const clave of claves) {
+      const valor = originales.get(clave)
+      if (valor === undefined) delete process.env[clave]
+      else process.env[clave] = valor
+    }
+  }
 })

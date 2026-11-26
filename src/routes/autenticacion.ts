@@ -1,6 +1,6 @@
 import { Router, type Request } from 'express'
 import { z } from 'zod'
-import { env } from '../config/env.ts'
+import { env, getDemoCredentials } from '../config/env.ts'
 import { emitirToken, hashContrasena, verificarContrasena } from '../lib/auth.ts'
 import { HttpError } from '../lib/http.ts'
 import { prisma } from '../lib/prisma.ts'
@@ -194,6 +194,14 @@ autenticacionRouter.post('/login', async (req, res) => {
       rol: { id: rol, nombre: rol.toLowerCase() },
     },
   })
+})
+
+autenticacionRouter.get('/demo-credentials', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (env.sunatModo !== 'local') {
+    throw new HttpError(404, 'NOT_FOUND', 'Recurso no disponible.')
+  }
+  res.json({ credentials: getDemoCredentials() })
 })
 
 autenticacionRouter.get('/me', autenticar, (req, res) => {

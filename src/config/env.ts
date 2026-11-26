@@ -111,3 +111,31 @@ export const objectStorageConfigurado = Boolean(
     env.objectAccessKeyId &&
     env.objectSecretAccessKey,
 )
+
+export interface DemoCredential {
+  username: string
+  password: string
+  role: 'ADMIN' | 'MAESTRO'
+  label: string
+}
+
+/**
+ * Credenciales públicas del demo local. Se leen del entorno en cada petición para
+ * que las contraseñas nunca queden escritas en el repositorio ni en el bundle.
+ */
+export function getDemoCredentials(): DemoCredential[] {
+  return [
+    {
+      username: (process.env.ADMIN_USUARIO ?? 'admin').trim().toLowerCase(),
+      password: process.env.ADMIN_CONTRASENA ?? '',
+      role: 'ADMIN' as const,
+      label: 'Administrador',
+    },
+    {
+      username: (process.env.MAESTRO_USUARIO ?? 'maestro').trim().toLowerCase(),
+      password: process.env.MAESTRO_CONTRASENA ?? '',
+      role: 'MAESTRO' as const,
+      label: 'Maestro',
+    },
+  ].filter((credential) => credential.username.length > 0 && credential.password.length > 0)
+}
