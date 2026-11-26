@@ -1,0 +1,425 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TipoComprobante {
+  FACTURA
+  BOLETA
+  NOTA_CREDITO
+  NOTA_DEBITO
+  GUIA_REMISION
+}
+
+enum EstadoComprobante {
+  BORRADOR
+  EMITIDO
+  ACEPTADO
+  RECHAZADO
+  ANULADO
+}
+
+model Empresa {
+  id              String   @id @default(cuid())
+  ruc             String   @unique
+  razonSocial     String
+  nombreComercial String?
+  direccion       String
+  ubigeo          String
+  distrito        String
+  provincia       String
+  departamento    String
+  email           String?
+  telefono        String?
+  creadoEn        DateTime @default(now())
+}
+
+enum RolUsuario {
+  ADMIN
+  VENDEDOR
+  MAESTRO
+}
+
+model Usuario {
+  id               String     @id @default(cuid())
+  usuario          String     @unique
+  nombre           String
+  passwordHash     String
+  rol              RolUsuario @default(VENDEDOR)
+  activo           Boolean    @default(true)
+  puedeFacturar    Boolean    @default(true)
+  intentosFallidos Int        @default(0)
+  ultimoFalloEn    DateTime?
+  bloqueadoHasta   DateTime?
+  creadoEn         DateTime   @default(now())
+  movimientosStock MovimientoStock[]
+}
+
+model Cliente {
+  id              String           @id @default(cuid())
+  tipoDocumento   String
+  numeroDocumento String           @unique
+  razonSocial     String
+  direccion       String?
+  email           String?
+  telefono        String?
+  ubigeo          String?
+  creadoEn        DateTime         @default(now())
+  comprobantes    Comprobante[]
+  documentosVenta DocumentoVenta[]
+  guiasRemision   GuiaRemision[]
+}
+
+model Producto {
+  id             String               @id @default(cuid())
+  codigo         String               @unique
+  descripcion    String
+  unidad         String               @default("NIU")
+  precioUnitario Decimal              @db.Decimal(12, 2)
+  afectoIgv      Boolean              @default(true)
+  stock          Int                  @default(0)
+  items          ComprobanteItem[]
+  documentos     DocumentoVentaItem[]
+  guias          GuiaRemisionItem[]
+  movimientos    MovimientoStock[]
+}
+
+enum TipoMovimientoStock {
+  ENTRADA
+  SALIDA
+  VENTA
+}
+
+model MovimientoStock {
+  id             String               @id @default(cuid())
+  productoId     String
+  producto       Producto             @relation(fields: [productoId], references: [id])
+  tipo           TipoMovimientoStock
+  cantidad       Int
+  motivo         String?
+  stockAnterior  Int
+  stockPosterior Int
+  usuarioId      String?
+  usuario        Usuario?             @relation(fields: [usuarioId], references: [id])
+  comprobanteId  String?
+  comprobante    Comprobante?         @relation(fields: [comprobanteId], references: [id])
+  creadoEn       DateTime             @default(now())
+
+  @@unique([comprobanteId, productoId])
+  @@index([productoId, creadoEn])
+}
+
+model Serie {
+  id        String          @id @default(cuid())
+  tipo      TipoComprobante
+  serie     String
+  siguiente Int             @default(1)
+
+  @@unique([tipo, serie])
+}
+
+model Comprobante {
+  id                String             @id @default(cuid())
+  tipo              TipoComprobante
+  serie             String
+  numero            Int
+  fecha             DateTime
+  clienteId         String
+  cliente           Cliente            @relation(fields: [clienteId], references: [id])
+  subtotal          Decimal            @db.Decimal(12, 2)
+  igv               Decimal            @db.Decimal(12, 2)
+  total             Decimal            @db.Decimal(12, 2)
+  moneda            String             @default("PEN")
+  tipoCambio        Decimal            @default(1) @db.Decimal(12, 4)
+  estado            EstadoComprobante  @default(BORRADOR)
+  sunatCodigo       String?
+  sunatMensaje      String?
+  sunatUuid         String?
+  sunatTicket       String?
+  archivoXmlKey     String?
+  archivoZipKey     String?
+  archivoCdrKey     String?
+  observacion       String?
+  documentoAfectado String?
+  motivoNota        String?
+  motivoAnulacion   String?
+  anuladoEn         DateTime?
+  detraccionCodigo  String             @default("000")
+  detraccionTasa    Decimal            @default(0) @db.Decimal(5, 2)
+  detraccionMonto   Decimal            @default(0) @db.Decimal(12, 2)
+  creadoEn          DateTime           @default(now())
+  items             ComprobanteItem[]
+  documentosVenta   DocumentoVenta[]
+  guiasRemision     GuiaRemision[]
+  resumenes         ResumenSunatItem[]
+  movimientosStock  MovimientoStock[]
+
+  @@unique([tipo, serie, numero])
+  @@index([fecha])
+  @@index([estado])
+}
+
+model ComprobanteItem {
+  id             String      @id @default(cuid())
+  comprobanteId  String
+  comprobante    Comprobante @relation(fields: [comprobanteId], references: [id], onDelete: Cascade)
+  productoId     String?
+  producto       Producto?   @relation(fields: [productoId], references: [id])
+  descripcion    String
+  cantidad       Decimal     @db.Decimal(12, 3)
+  valorUnitario  Decimal     @db.Decimal(12, 4)
+  precioUnitario Decimal     @db.Decimal(12, 4)
+  igv            Decimal     @db.Decimal(12, 2)
+  total          Decimal     @db.Decimal(12, 2)
+  afectoIgv      Boolean     @default(true)
+
+  @@index([comprobanteId])
+}
+
+enum TipoDocumentoVenta {
+  COTIZACION
+  PEDIDO
+}
+
+enum EstadoDocumentoVenta {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+  CONVERTIDO
+}
+
+enum MotivoGuia {
+  VENTA
+  TRASLADO
+  DEVOLUCION
+  OTRO
+}
+
+enum ModalidadGuia {
+  PUBLICO
+  PRIVADO
+}
+
+enum EstadoGuia {
+  EMITIDA
+  ANULADA
+}
+
+enum EstadoGuiaSunat {
+  PENDIENTE
+  ACEPTADO
+  RECHAZADO
+  ERROR_ENVIO
+}
+
+enum TipoResumenSunat {
+  RESUMEN_DIARIO
+  COMUNICACION_BAJA
+}
+
+enum EstadoResumenSunat {
+  GENERADO
+  PENDIENTE
+  ACEPTADO
+  RECHAZADO
+}
+
+/**
+ * Catálogo de códigos de detracción importado de SICAP (DETRACCIONES.DBF).
+ */
+model Detraccion {
+  id     String  @id @default(cuid())
+  codigo String  @unique
+  nombre String
+  tasa   Decimal @db.Decimal(5, 2)
+  activo Boolean @default(true)
+}
+
+/**
+ * Correlativos de documentos no tributarios (C001, P001, T001).
+ */
+model Secuencia {
+  clave     String @id
+  siguiente Int    @default(1)
+}
+
+model DocumentoVenta {
+  id               String               @id @default(cuid())
+  tipo             TipoDocumentoVenta
+  serie            String
+  numero           Int
+  fecha            DateTime
+  fechaVencimiento DateTime?
+  fechaEntrega     DateTime?
+  clienteId        String
+  cliente          Cliente              @relation(fields: [clienteId], references: [id])
+  solicitadoPor    String?
+  subtotal         Decimal              @db.Decimal(12, 2)
+  igv              Decimal              @db.Decimal(12, 2)
+  total            Decimal              @db.Decimal(12, 2)
+  estado           EstadoDocumentoVenta @default(PENDIENTE)
+  observacion      String?
+  comprobanteId    String?              @unique
+  comprobante      Comprobante?         @relation(fields: [comprobanteId], references: [id])
+  items            DocumentoVentaItem[]
+  creadoEn         DateTime             @default(now())
+
+  @@unique([tipo, serie, numero])
+  @@index([fecha])
+  @@index([estado])
+}
+
+model DocumentoVentaItem {
+  id             String         @id @default(cuid())
+  documentoId    String
+  documento      DocumentoVenta @relation(fields: [documentoId], references: [id], onDelete: Cascade)
+  /// Null cuando la línea se escribió a mano en la proforma o el pedido.
+  productoId     String?
+  producto       Producto?      @relation(fields: [productoId], references: [id])
+  descripcion    String
+  cantidad       Decimal        @db.Decimal(12, 3)
+  valorUnitario  Decimal        @db.Decimal(12, 4)
+  precioUnitario Decimal        @db.Decimal(12, 4)
+  igv            Decimal        @db.Decimal(12, 2)
+  total          Decimal        @db.Decimal(12, 2)
+  afectoIgv      Boolean        @default(true)
+
+  @@index([documentoId])
+}
+
+model GuiaRemision {
+  id               String             @id @default(cuid())
+  serie            String
+  numero           Int
+  fechaEmision     DateTime
+  fechaTraslado    DateTime
+  clienteId        String
+  cliente          Cliente            @relation(fields: [clienteId], references: [id])
+  motivo           MotivoGuia
+  modalidad        ModalidadGuia
+  pesoKg           Decimal?           @db.Decimal(12, 3)
+  direccionPartida String
+  direccionLlegada String
+  ubigeoPartida    String?
+  ubigeoLlegada    String?
+  placa            String?
+  conductor        String?
+  conductorDocumento String?
+  conductorLicencia  String?
+  transportistaRuc   String?
+  transportistaRazonSocial String?
+  transportistaRegistroMtc String?
+  notas            String?
+  comprobanteId    String?
+  comprobante      Comprobante?       @relation(fields: [comprobanteId], references: [id])
+  estado           EstadoGuia         @default(EMITIDA)
+  estadoSunat      EstadoGuiaSunat?
+  sunatCodigo      String?
+  sunatMensaje     String?
+  sunatTicket      String?
+  archivoXmlKey    String?
+  archivoZipKey    String?
+  archivoCdrKey    String?
+  enviadoEn        DateTime?
+  motivoAnulacion  String?
+  anuladoEn        DateTime?
+  items            GuiaRemisionItem[]
+  creadoEn         DateTime           @default(now())
+
+  @@unique([serie, numero])
+  @@index([fechaEmision])
+  @@index([estado])
+  @@index([estadoSunat])
+}
+
+model GuiaRemisionItem {
+  id          String       @id @default(cuid())
+  guiaId      String
+  guia        GuiaRemision @relation(fields: [guiaId], references: [id], onDelete: Cascade)
+  productoId  String
+  producto    Producto     @relation(fields: [productoId], references: [id])
+  descripcion String
+  cantidad    Decimal      @db.Decimal(12, 3)
+
+  @@index([guiaId])
+}
+
+/**
+ * Resumen diario de boletas (RC001) y comunicación de bajas (RA001).
+ * Se envía con sendSummary/getStatus cuando el proveedor directo está configurado;
+ * sin credenciales queda como registro local (códigos LOCAL-RESUMEN / LOCAL-BAJA).
+ */
+model ResumenSunat {
+  id               String             @id @default(cuid())
+  tipo             TipoResumenSunat
+  serie            String
+  numero           Int
+  fecha            DateTime
+  estado           EstadoResumenSunat @default(GENERADO)
+  codigoRespuesta  String?
+  mensajeRespuesta String?
+  observacion      String?
+  sunatTicket      String?
+  archivoXmlKey    String?
+  archivoZipKey    String?
+  archivoCdrKey    String?
+  reenvios         Int                @default(0)
+  creadoEn         DateTime           @default(now())
+  actualizadoEn    DateTime           @updatedAt
+  items            ResumenSunatItem[]
+
+  @@unique([tipo, serie, numero])
+  @@index([fecha])
+  @@index([tipo, estado])
+}
+
+model ResumenSunatItem {
+  id               String          @id @default(cuid())
+  resumenId        String
+  resumen          ResumenSunat    @relation(fields: [resumenId], references: [id], onDelete: Cascade)
+  comprobanteId    String
+  comprobante      Comprobante     @relation(fields: [comprobanteId], references: [id])
+  tipoDocumento    TipoComprobante
+  serie            String
+  numero           Int
+  clienteDocumento String
+  fechaEmision     DateTime
+  subtotal         Decimal         @db.Decimal(12, 2)
+  igv              Decimal         @db.Decimal(12, 2)
+  total            Decimal         @db.Decimal(12, 2)
+  motivoBaja       String?
+
+  @@unique([resumenId, comprobanteId])
+  @@index([comprobanteId])
+}
+
+/**
+ * Bitácora de operaciones. Guarda una foto del usuario para conservar el registro
+ * aunque la cuenta se desactive o se elimine.
+ */
+model Auditoria {
+  id          String   @id @default(cuid())
+  usuarioId   String?
+  usuario     String
+  nombre      String?
+  modulo      String
+  accion      String
+  entidad     String
+  entidadId   String?
+  metodo      String
+  ruta        String
+  estado      Int
+  direccionIp String?
+  /** Texto JSON con solicitud y respuesta saneadas; nunca guarda secretos. */
+  detalle     String?
+  creadoEn    DateTime @default(now())
+
+  @@index([creadoEn])
+  @@index([usuarioId])
+  @@index([modulo])
+  @@index([accion])
+}

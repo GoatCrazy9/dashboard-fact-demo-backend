@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: dashboard-fact-demo-backend
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    repo: https://github.com/GoatCrazy9/dashboard-fact-demo-backend
+    buildCommand: npm install && npm run db:generate && npx prisma db push --skip-generate
+    startCommand: npm start
+    healthCheckPath: /api/salud
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_JWT_SECRET
+        sync: false
+      - key: AUTH_PASSWORD_PEPPER
+        sync: false
+      - key: AUTH_TTL_SECONDS
+        value: '28800'
+      - key: AUTH_MAX_INTENTOS
+        value: '5'
+      - key: AUTH_BLOQUEO_MINUTOS
+        value: '5'
+      - key: AUTH_VENTANA_MINUTOS
+        value: '15'
+      - key: ADMIN_USUARIO
+        value: admin
+      - key: ADMIN_CONTRASENA
+        sync: false
+      - key: MAESTRO_USUARIO
+        value: maestro
+      - key: MAESTRO_CONTRASENA
+        sync: false
+      - key: SUNAT_PROVEEDOR
+        value: local
+      - key: SUNAT_MODO
+        value: local
+      - key: SUNAT_GRE_MODO
+        value: desactivado
+      - key: SUNAT_TIMEOUT_MS
+        value: '30000'
