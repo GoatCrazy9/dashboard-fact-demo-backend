@@ -6,7 +6,7 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/GoatCrazy9/dashboard-fact-demo-backend
-    buildCommand: npm install && npm run db:generate && npx prisma db push --skip-generate
+    buildCommand: npm install && npm run db:generate && npx prisma db push --skip-generate && npm run db:seed
     startCommand: npm start
     healthCheckPath: /api/salud
     autoDeploy: true

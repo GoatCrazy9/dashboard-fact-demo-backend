@@ -65,7 +65,7 @@ const resumenBase: ResumenParaEnviar = {
   tipo: 'RESUMEN_DIARIO',
   numero: 3,
   fecha: new Date('2026-11-24T00:00:00.000Z'),
-  emisor: { ruc: '20123456789', razonSocial: 'Mueblería José S.A.C.' },
+  emisor: { ruc: '20123456789', razonSocial: 'Demo Comercial S.A.C.' },
   observacion: 'Resumen <diario>',
   items: [
     {

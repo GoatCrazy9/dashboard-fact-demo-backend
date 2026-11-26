@@ -6,16 +6,16 @@ import { DETRACCIONES } from '../src/services/detracciones/catalogo.ts'
 
 const prisma = new PrismaClient()
 
-// Datos tomados de los JSON de emisión de SICAP (CPE/PRODUCCION).
+// Datos ficticios exclusivos del demo público; sin relación con DEMO.
 const empresa = {
-  ruc: process.env.EMPRESA_RUC ?? '10101222221',
-  razonSocial: process.env.EMPRESA_RAZON_SOCIAL ?? 'MUEBLERIA JOSE',
-  nombreComercial: process.env.EMPRESA_NOMBRE_COMERCIAL ?? 'MUEBLERIA JOSE',
+  ruc: process.env.EMPRESA_RUC ?? '20000000001',
+  razonSocial: process.env.EMPRESA_RAZON_SOCIAL ?? 'DEMO COMERCIAL SAC',
+  nombreComercial: process.env.EMPRESA_NOMBRE_COMERCIAL ?? 'DEMO COMERCIAL',
   direccion:
     process.env.EMPRESA_DIRECCION ??
-    'Av. Angamos Este Nro. 1551 Block 2, 1 Piso Tda 79 C.C. Plaza Hogar - Lima - Lima - Surquillo',
+    'Av. Demostracion 123, Lima - Lima - Lima',
   ubigeo: process.env.EMPRESA_UBIGEO ?? '150101',
-  distrito: 'SAN BORJA',
+  distrito: 'LIMA',
   provincia: 'LIMA',
   departamento: 'LIMA',
 }
@@ -23,57 +23,49 @@ const empresa = {
 const clientes = [
   {
     tipoDocumento: 'DNI',
-    numeroDocumento: '45678912',
-    razonSocial: 'Juan Pérez Quispe',
-    direccion: 'Jr. Los Álamos 456',
-    telefono: '987654321',
+    numeroDocumento: '00000001',
+    razonSocial: 'CLIENTE DEMO UNO',
+    direccion: 'Av. Demo 100, Lima',
+    telefono: '900000001',
   },
   {
     tipoDocumento: 'RUC',
-    numeroDocumento: '20100047218',
-    razonSocial: 'BANCO DE CREDITO DEL PERU',
-    direccion: 'Av. Centenario 156',
-    telefono: '01 442 4455',
+    numeroDocumento: '20000000002',
+    razonSocial: 'EMPRESA DEMO DOS SAC',
+    direccion: 'Av. Demo 200, Lima',
+    telefono: '900000002',
   },
   {
     tipoDocumento: 'DNI',
-    numeroDocumento: '41375341',
-    razonSocial: 'María López Ramos',
-    direccion: 'Calle Las Flores 789',
-    telefono: '912345678',
+    numeroDocumento: '00000003',
+    razonSocial: 'CLIENTE DEMO TRES',
+    direccion: 'Av. Demo 300, Lima',
+    telefono: '900000003',
   },
 ]
 
 const productos = [
   {
-    codigo: 'MUE-001',
-    descripcion: 'Juego de comedor 6 sillas madera tornillo',
+    codigo: 'DEM-001',
+    descripcion: 'Producto de demostración A',
     unidad: 'NIU',
-    precioUnitario: '1850.00',
+    precioUnitario: '100.00',
     afectoIgv: true,
-    stock: 4,
+    stock: 20,
   },
   {
-    codigo: 'MUE-002',
-    descripcion: 'Ropero 2 puertas con espejo',
+    codigo: 'DEM-002',
+    descripcion: 'Producto de demostración B',
     unidad: 'NIU',
-    precioUnitario: '980.00',
+    precioUnitario: '250.00',
     afectoIgv: true,
-    stock: 7,
+    stock: 15,
   },
   {
-    codigo: 'MUE-003',
-    descripcion: 'Colchón ortopédico 2 plazas',
-    unidad: 'NIU',
-    precioUnitario: '650.00',
-    afectoIgv: true,
-    stock: 12,
-  },
-  {
-    codigo: 'SRV-001',
-    descripcion: 'Servicio de armado a domicilio',
+    codigo: 'DEM-003',
+    descripcion: 'Servicio de demostración',
     unidad: 'ZZ',
-    precioUnitario: '80.00',
+    precioUnitario: '50.00',
     afectoIgv: true,
     stock: 0,
   },

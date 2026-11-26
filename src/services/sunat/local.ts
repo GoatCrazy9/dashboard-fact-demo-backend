@@ -20,7 +20,7 @@ function generarCdrLocal(cpe: CpeAEnviar): string {
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<DemoCdr xmlns="urn:demo:sicap:cdr">',
+    '<DemoCdr xmlns="urn:demo:facturacion:cdr">',
     `  <NumeroComprobante>${escapar(numero)}</NumeroComprobante>`,
     `  <FechaEmision>${fecha}</FechaEmision>`,
     `  <RucEmisor>${escapar(cpe.emisor.ruc)}</RucEmisor>`,

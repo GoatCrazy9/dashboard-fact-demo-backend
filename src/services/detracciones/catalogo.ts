@@ -1,6 +1,6 @@
 /**
- * Catálogo tomado de SICAP `VENTAS\DETRACCIONES.DBF` (35 registros).
- * `008 MADERA` es el código propio de la mueblería; `000` significa "no aplica".
+ * Catálogo tomado de DEMO `VENTAS\DETRACCIONES.DBF` (35 registros).
+ * `008 MADERA` es el código propio de la negocio; `000` significa "no aplica".
  */
 export interface DetraccionCatalogo {
   codigo: string

@@ -5,7 +5,7 @@ import { DETRACCIONES, buscarDetraccion } from '../src/services/detracciones/cat
 import { generarXmlCpe } from '../src/services/sunat/sunat-direct/xml.ts'
 import type { CpeAEnviar } from '../src/services/sunat/types.ts'
 
-test('el catálogo de detracciones conserva los 35 códigos de SICAP', () => {
+test('el catálogo de detracciones conserva los 35 códigos de DEMO', () => {
   assert.equal(DETRACCIONES.length, 35)
   assert.deepEqual(buscarDetraccion('008'), { codigo: '008', nombre: 'MADERA', tasa: 4 })
   assert.equal(buscarDetraccion('999'), null)
@@ -26,7 +26,7 @@ test('el XML local anota la detracción aplicada sin contactar a SUNAT', () => {
     numero: 1,
     fecha: new Date('2026-11-24T00:00:00.000Z'),
     moneda: 'PEN',
-    emisor: { ruc: '10101222221', razonSocial: 'MJ', direccion: 'Av. Uno', ubigeo: '150101' },
+    emisor: { ruc: '20000000001', razonSocial: 'DEMO', direccion: 'Av. Uno', ubigeo: '150101' },
     receptor: {
       tipoDocumento: 'RUC',
       numeroDocumento: '20100047218',

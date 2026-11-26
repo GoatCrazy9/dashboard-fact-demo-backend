@@ -28,7 +28,7 @@ export function crearApp() {
   app.use(express.json({ limit: '1mb' }))
 
   app.get('/api/salud', (_req, res) => {
-    res.json({ ok: true, servicio: 'facturacion-muebleria-jose' })
+    res.json({ ok: true, servicio: 'facturacion-demo' })
   })
 
   // Login público y verificación de sesión antes del middleware global.

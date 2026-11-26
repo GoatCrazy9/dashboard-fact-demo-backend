@@ -104,7 +104,7 @@ function centrarEnvuelto(lienzo: Lienzo, yInicial: number, texto: string, ancho:
 
 const anchoTextoAprox = (texto: string, tamano: number) => texto.length * tamano * 0.5
 
-/** Ticket POS 80 en PDF, con el mismo QR que genera SICAP. */
+/** Ticket POS 80 en PDF, con el mismo QR que genera DEMO. */
 export function pdfComprobante(comprobante: DatosComprobantePdf, empresa: DatosEmpresaPdf): Buffer {
   const documento = new PdfDocumento()
   let lienzo = documento.nuevaPagina(204.3, 842.02502)
@@ -130,7 +130,7 @@ export function pdfComprobante(comprobante: DatosComprobantePdf, empresa: DatosE
   }
 
   centro(empresa.razonSocial.toUpperCase(), 13, true, 13)
-  centro('De: Urquiza Cabrera Jose Humberto', 7, false, 9)
+  centro('De: Representante demo', 7, false, 9)
   centro('FABRICANTE DE MUEBLES DE DORMITORIO', 7, true, 11)
   y = centrarEnvuelto(lienzo, y, empresa.direccion, 196, 7, 9)
   if (empresa.telefono) centro(`Cel.: ${empresa.telefono}`, 7, false, 9)
@@ -223,7 +223,7 @@ export function pdfComprobante(comprobante: DatosComprobantePdf, empresa: DatosE
   const idImagen = documento.imagenDeMatriz(qr.size, qr.datos)
   lienzo.imagen(76.15, 112, 52, 52, idImagen)
   lienzo.linea(2.5, 103, 201.8, 103, '0.85 0.85 0.85')
-  lienzo.texto(102.15, 90, 'Sistema SICAP · emisión local', { tamano: 6, alineacion: 'centro', color: '0.4 0.4 0.4' })
+  lienzo.texto(102.15, 90, 'Sistema DEMO · emisión local', { tamano: 6, alineacion: 'centro', color: '0.4 0.4 0.4' })
   lienzo.texto(102.15, 80, `Generado ${fechaTicket(comprobante.fecha)} · sin envío a SUNAT`, {
     tamano: 6,
     alineacion: 'centro',

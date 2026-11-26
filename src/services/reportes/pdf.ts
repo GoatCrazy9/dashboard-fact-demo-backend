@@ -231,7 +231,7 @@ export function pdfReporteVentas(
     paginaFooter.texto(
       margen,
       24,
-      `SICAP · Reporte de ventas · ${reporte.desde} a ${reporte.hasta}`,
+      `DEMO · Reporte de ventas · ${reporte.desde} a ${reporte.hasta}`,
       { tamano: 7, color: '0.4 0.4 0.4' },
     )
     paginaFooter.texto(

@@ -1,5 +1,5 @@
 {
-  "name": "muebleria-jose-backend",
+  "name": "dashboard-fact-demo-backend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -10,8 +10,7 @@
     "test": "tsx --test test/*.test.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
-    "dbf:inspect": "node scripts/inspect-dbf.mjs"
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1177.0",

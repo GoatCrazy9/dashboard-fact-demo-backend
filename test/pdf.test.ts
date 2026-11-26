@@ -24,21 +24,21 @@ function textoFlujos(pdf: Buffer): string {
 }
 
 const empresa = {
-  razonSocial: 'MUEBLERIA JOSE',
+  razonSocial: 'DEMO COMERCIAL SAC',
   direccion:
-    'Av. Angamos Este Nro. 1551 Block 2, 1 Piso Tda 79 C.C. Plaza Hogar - Lima - Lima - Surquillo',
-  ruc: '10101222221',
+    'Av. Demostracion 123, Lima - Lima - Lima',
+  ruc: '20000000001',
   telefono: '955779178',
 }
 
-test('el QR reproduce el texto decodificado de los PDF reales de SICAP', () => {
+test('el QR reproduce el texto decodificado de los PDF reales de DEMO', () => {
   const texto = textoQrComprobante({ ...empresa, numero: 431 })
   assert.equal(
     texto,
-    'MUEBLERIA JOSE\r' +
-      'Av. Angamos Este Nro. 1551 Block 2, 1 Piso Tda 79 C.C. Plaza Hogar - Lima - Lima - Surquillo\r' +
+    'DEMO COMERCIAL SAC\r' +
+      'Av. Demostracion 123, Lima - Lima - Lima\r' +
       '  \r' +
-      'RUC: 10101222221\r' +
+      'RUC: 20000000001\r' +
       'LIMA\r' +
       '  \r' +
       'Factura No. 00000431',

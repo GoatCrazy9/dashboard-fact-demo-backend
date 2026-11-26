@@ -36,7 +36,7 @@ function cpe(overrides: Partial<CpeAEnviar> = {}): CpeAEnviar {
     moneda: 'PEN',
     emisor: {
       ruc: '20123456789',
-      razonSocial: 'Mueblería José S.A.C.',
+      razonSocial: 'Demo Comercial S.A.C.',
       direccion: 'Av. Los Muebles 123, Lima',
       ubigeo: '150101',
     },
@@ -263,7 +263,7 @@ function certificadoDePrueba(): { certificado: CertificadoFirma; pfx: Buffer } {
   certificado.validity.notAfter = new Date(Date.now() + 86_400_000)
   const atributos = [
     { name: 'commonName', value: 'PRUEBA SUNAT' },
-    { name: 'organizationName', value: 'Muebleria Jose' },
+    { name: 'organizationName', value: 'Demo Comercial' },
     { name: 'countryName', value: 'PE' },
   ]
   certificado.setSubject(atributos)
@@ -327,7 +327,7 @@ function guia(overrides: Partial<GuiaAEnviar> = {}): GuiaAEnviar {
     comprobante: { tipo: 'FACTURA', serie: 'F001', numero: 9 },
     emisor: {
       ruc: '20123456789',
-      razonSocial: 'Mueblería José S.A.C.',
+      razonSocial: 'Demo Comercial S.A.C.',
       direccion: 'Av. Los Muebles 123, Lima',
       ubigeo: '150101',
     },

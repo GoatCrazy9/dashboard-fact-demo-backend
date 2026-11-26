@@ -185,7 +185,7 @@ autenticacionRouter.post('/login', async (req, res) => {
     expires_in: expiresEn,
     expiresAt,
     user,
-    // Compatibilidad con el contrato histórico del frontend de dojo.
+    // Compatibilidad con el contrato histórico del frontend de demo.
     usuario: {
       public_id: usuario.id,
       usuario: usuario.usuario,

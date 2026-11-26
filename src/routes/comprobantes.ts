@@ -62,12 +62,11 @@ export const anularComprobanteSchema = z.object({
 
 export const comprobantesRouter = Router()
 
-/** Datos de empresa usados tanto en el PDF como en el QR; SICAP no guarda teléfono en la API. */
-const EMPRESA_SICAP = {
-  razonSocial: 'MUEBLERIA JOSE',
-  direccion:
-    'Av. Angamos Este Nro. 1551 Block 2, 1 Piso Tda 79 C.C. Plaza Hogar - Lima - Lima - Surquillo',
-  ruc: '10101222221',
+/** Datos de empresa usados en el PDF y el QR cuando aún no hay registro en la BD. */
+const EMPRESA_DEMO = {
+  razonSocial: 'DEMO COMERCIAL SAC',
+  direccion: 'Av. Demostracion 123, Lima - Lima - Lima',
+  ruc: '20000000001',
 }
 
 async function contextoComprobante(id: string) {
@@ -77,9 +76,9 @@ async function contextoComprobante(id: string) {
   return {
     comprobante,
     empresa: {
-      razonSocial: empresa?.razonSocial || EMPRESA_SICAP.razonSocial,
-      direccion: empresa?.direccion || EMPRESA_SICAP.direccion,
-      ruc: empresa?.ruc || EMPRESA_SICAP.ruc,
+      razonSocial: empresa?.razonSocial || EMPRESA_DEMO.razonSocial,
+      direccion: empresa?.direccion || EMPRESA_DEMO.direccion,
+      ruc: empresa?.ruc || EMPRESA_DEMO.ruc,
       telefono: empresa?.telefono ?? null,
     },
   }
@@ -118,7 +117,7 @@ comprobantesRouter.get('/:id/cdr', async (req, res) => {
   res.json(await consultarCdr(req.params.id))
 })
 
-/** QR con el texto decodificado de los PDF reales de SICAP. No es un código SUNAT. */
+/** QR con el texto decodificado de los PDF reales de DEMO. No es un código SUNAT. */
 comprobantesRouter.get('/:id/qr', async (req, res) => {
   const { comprobante, empresa } = await contextoComprobante(req.params.id)
   const texto = textoQrComprobante({

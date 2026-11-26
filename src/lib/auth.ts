@@ -21,8 +21,8 @@ export interface PayloadToken {
   user: UsuarioToken
 }
 
-const EMISOR = 'muebleria-jose-api'
-const AUDIENCIA = 'muebleria-jose-client'
+const EMISOR = 'dashboard-fact-demo-api'
+const AUDIENCIA = 'dashboard-fact-demo-client'
 const LONGITUD_CLAVE = 64
 
 function derivar(password: string, salt: Buffer, pepper: string): Promise<Buffer> {
@@ -70,7 +70,7 @@ function firmar(cabecera: string, cuerpo: string, secreto: string): string {
   return createHmac('sha256', secreto).update(`${cabecera}.${cuerpo}`).digest('base64url')
 }
 
-/** JWT HS256 de 8 h por defecto, con issuer/audience propios de SICAP. */
+/** JWT HS256 de 8 h por defecto, con issuer/audience propios de DEMO. */
 export function emitirToken(
   usuario: UsuarioToken,
   secreto: string,

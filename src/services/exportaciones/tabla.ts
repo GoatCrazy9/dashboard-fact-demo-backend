@@ -106,7 +106,7 @@ export function pdfTabla(datos: TablaExport): Buffer {
 
   documento.paginas.forEach((hoja, indice) => {
     hoja.linea(margen, 34, margen + anchoUtil, 34, '0.85 0.85 0.85')
-    hoja.texto(margen, 22, `SICAP · ${datos.titulo}`, { tamano: 7, color: '0.4 0.4 0.4' })
+    hoja.texto(margen, 22, `DEMO · ${datos.titulo}`, { tamano: 7, color: '0.4 0.4 0.4' })
     hoja.texto(margen + anchoUtil, 22, `Página ${indice + 1} de ${documento.paginas.length}`, {
       tamano: 7,
       alineacion: 'derecha',

@@ -11,9 +11,9 @@ const comprobante: CpeAEnviar = {
   fecha: new Date('2026-11-25T00:00:00.000Z'),
   moneda: 'PEN',
   emisor: {
-    ruc: '10101222221',
-    razonSocial: 'MUEBLERIA JOSE',
-    direccion: 'Av. Angamos Este 1551',
+    ruc: '20000000001',
+    razonSocial: 'DEMO COMERCIAL SAC',
+    direccion: 'Av. Demostracion 123',
     ubigeo: '150101',
   },
   receptor: {
@@ -31,9 +31,9 @@ const comprobante: CpeAEnviar = {
 
 test('las llaves de archivo ordenan por RUC, año y mes', () => {
   const claves = clavesArchivoCpe(comprobante, true)
-  assert.equal(claves.xmlKey, 'cpe/10101222221/2026/11/B001-00000011.xml')
-  assert.equal(claves.zipKey, 'cpe/10101222221/2026/11/B001-00000011.zip')
-  assert.equal(claves.cdrKey, 'cpe/10101222221/2026/11/B001-00000011-cdr.xml')
+  assert.equal(claves.xmlKey, 'cpe/20000000001/2026/11/B001-00000011.xml')
+  assert.equal(claves.zipKey, 'cpe/20000000001/2026/11/B001-00000011.zip')
+  assert.equal(claves.cdrKey, 'cpe/20000000001/2026/11/B001-00000011-cdr.xml')
 })
 
 test('sin CDR no se registra llave de CDR', () => {

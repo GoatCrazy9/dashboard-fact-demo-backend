@@ -229,7 +229,7 @@ enum EstadoResumenSunat {
 }
 
 /**
- * Catálogo de códigos de detracción importado de SICAP (DETRACCIONES.DBF).
+ * Catálogo de códigos de detracción importado de DEMO (DETRACCIONES.DBF).
  */
 model Detraccion {
   id     String  @id @default(cuid())

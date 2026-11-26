@@ -27,7 +27,7 @@ const guia = {
   motivo: 'VENTA' as const,
   modalidad: 'PRIVADO' as const,
   pesoKg: 12.5,
-  direccionPartida: 'Av. Angamos Este 1551, Lima',
+  direccionPartida: 'Av. Demostracion 123, Lima',
   direccionLlegada: 'Jr. Secundario 456, Arequipa',
   ubigeoPartida: '150101',
   ubigeoLlegada: '040101',
@@ -42,8 +42,8 @@ const guia = {
   comprobante: null,
   emisor: {
     ruc: configuracion.ruc,
-    razonSocial: 'Mueblería José S.A.C.',
-    direccion: 'Av. Angamos Este 1551, Lima',
+    razonSocial: 'Demo Comercial S.A.C.',
+    direccion: 'Av. Demostracion 123, Lima',
     ubigeo: '150101',
   },
   receptor: {
