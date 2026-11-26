@@ -4,6 +4,7 @@ import { env } from '../config/env.ts'
 import { hashContrasena } from '../lib/auth.ts'
 import { HttpError } from '../lib/http.ts'
 import { prisma } from '../lib/prisma.ts'
+import { canChangePassword } from '../services/usuarios/passwordPolicy.ts'
 import { autenticar } from '../middleware/autenticar.ts'
 import { requerirRol } from '../middleware/requerirRol.ts'
 
@@ -118,10 +119,21 @@ usuariosRouter.patch('/:id/password', async (req, res) => {
   if (!objetivo) {
     throw new HttpError(404, 'NO_ENCONTRADO', 'No existe ese usuario.')
   }
-  // El maestro puede renovar su propia clave y la de vendedores y administradores.
-  const esPropio = req.authUser?.id === req.params.id
-  if (!esPropio && req.authUser?.rol === 'MAESTRO' && objetivo.rol === 'MAESTRO') {
-    throw new HttpError(403, 'ACCESO_DENEGADO', 'El maestro no puede cambiar la contraseña de otro maestro.')
+  const actor = req.authUser
+  const esPropio = actor?.id === req.params.id
+  const permitido =
+    actor &&
+    canChangePassword(
+      { id: actor.id, role: actor.rol },
+      { id: req.params.id, role: objetivo.rol },
+    )
+  if (!permitido) {
+    const mensaje = esPropio
+      ? 'El maestro no puede cambiar su propia contraseña.'
+      : objetivo.rol === 'MAESTRO'
+        ? 'El maestro no puede cambiar la contraseña de otro maestro.'
+        : 'No tienes permiso para cambiar contraseñas.'
+    throw new HttpError(403, 'ACCESO_DENEGADO', mensaje)
   }
 
   await prisma.usuario.update({

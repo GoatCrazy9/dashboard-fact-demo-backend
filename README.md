@@ -39,7 +39,7 @@ solo de `ADMIN_CONTRASENA` y `MAESTRO_CONTRASENA` en el entorno del servidor.
 
 - `GET /api/salud`: health check público.
 - `POST /api/autenticacion/login`, `GET /api/autenticacion/me`, `POST /api/autenticacion/logout`.
-- `GET/POST /api/usuarios`, `PATCH /api/usuarios/:id/password`: gestión exclusiva del `MAESTRO`.
+- `GET/POST /api/usuarios`, `PATCH /api/usuarios/:id/password`: gestión exclusiva del `MAESTRO`. El `MAESTRO` no puede cambiar contraseñas de cuentas `MAESTRO`, incluida la propia.
 - `GET /api/auditoria`: solo `ADMIN` o `MAESTRO`.
 - `GET/POST /api/clientes`, `GET/POST /api/productos`, `GET /api/detracciones`.
 - `GET/POST /api/comprobantes`, `GET /api/comprobantes/:id`, anulación, notas y reenvío.
