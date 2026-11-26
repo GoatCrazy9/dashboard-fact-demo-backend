@@ -1,11 +1,8 @@
 # Demo de facturación · Backend
 
-API Express 5 + TypeScript + Prisma 6 + PostgreSQL para una demostración pública independiente.
-El frontend vive en `../dashboard-fact-demo-frontend` y se despliega por separado en Vercel.
+API Express 5 + TypeScript + Prisma 6 + PostgreSQL. Atiende al frontend de `../dashboard-fact-demo-frontend`, desplegado por separado en Vercel.
 
-> Este proyecto es solo una demo. El proveedor SUNAT configurado es `local`: no hay envíos a SUNAT,
-> no se usan credenciales SOL y no se carga certificado. Los XML, ZIP y CDR son simulados y no tienen
-> validez tributaria.
+> Demo pública. El proveedor SUNAT está en `local`: no hay envíos, credenciales SOL ni certificado. Los XML, ZIP y CDR son simulados y no tienen validez tributaria.
 
 ## Puesta en marcha
 
@@ -19,21 +16,19 @@ npm run db:seed
 npm run dev                   # http://localhost:3001
 ```
 
-`.env` no se versiona. Contiene la cadena de conexión, los secretos del servidor y las credenciales
-del storage compatible con S3 donde se guardan los archivos de la demo.
+`.env` no se versiona. Ahí van la cadena de conexión, los secretos del servidor y las credenciales del storage compatible con S3 que guarda los archivos de la demo.
 
 ## Comandos
 
-| Comando | Qué hace |
+| Comando | Para qué sirve |
 | --- | --- |
-| `npm run dev` | API con recarga automática |
-| `npm run typecheck` | Verificación de tipos |
-| `npm test` | Pruebas de autenticación, permisos, cálculo, XML, ZIP, CDR y validaciones |
+| `npm run dev` | Levanta la API con recarga automática |
+| `npm run typecheck` | Revisa los tipos |
+| `npm test` | Cubre autenticación, permisos, cálculo, XML, ZIP, CDR y validaciones |
 | `npm run db:push` | Sincroniza el esquema con la base de datos |
-| `npm run db:seed` | Datos de demostración, series, detracciones y usuarios `admin`/`maestro` |
+| `npm run db:seed` | Carga datos de demostración, series, detracciones y usuarios `admin`/`maestro` |
 
-El seed es idempotente: no sobrescribe contraseñas ya cambiadas. Las contraseñas iniciales se leen
-solo de `ADMIN_CONTRASENA` y `MAESTRO_CONTRASENA` en el entorno del servidor.
+El seed se puede repetir sin problemas: no sobrescribe contraseñas que ya se cambiaron. Las iniciales salen solo de `ADMIN_CONTRASENA` y `MAESTRO_CONTRASENA`, definidas en el entorno del servidor.
 
 ## Endpoints principales
 
@@ -51,18 +46,17 @@ solo de `ADMIN_CONTRASENA` y `MAESTRO_CONTRASENA` en el entorno del servidor.
 - `GET /api/panel/resumen`, `GET /api/configuracion`.
 - `POST /api/ventas/emitir`: emite boletas o facturas al contado desde el formulario de Ventas.
 
-Todas las rutas `/api/*`, salvo salud y login, requieren token Bearer. Las mutaciones se registran en
-`Auditoria`; un fallo al auditar no bloquea la operación.
+Salud y login son públicos; el resto de `/api/*` pide token Bearer. Toda mutación se escribe en `Auditoria`, pero si falla esa escritura la operación sigue adelante.
 
 ## Roles
 
 - `ADMIN`: acceso total excepto la gestión de usuarios.
-- `MAESTRO`: gestión de usuarios y accesos, además de auditoría; no factura.
+- `MAESTRO`: usuarios, accesos y auditoría. No factura y no puede renovar contraseñas de maestros.
 - `VENDEDOR`: factura solo si `puedeFacturar = true`.
 
 ## SUNAT en modo local
 
-`SUNAT_PROVEEDOR=local` y `SUNAT_MODO=local` seleccionan el proveedor simulado. Genera:
+Con `SUNAT_PROVEEDOR=local` y `SUNAT_MODO=local` entra el proveedor simulado. Genera:
 
 - XML UBL 2.1 sin firma digital, marcado como demostración.
 - ZIP con ese XML.
@@ -72,8 +66,7 @@ Los resúmenes y bajas quedan como `LOCAL-RESUMEN` / `LOCAL-BAJA`. No se contact
 
 ## Archivado
 
-El paquete se guarda en un bucket privado compatible con S3. Si falta alguna variable de storage, la
-emisión continúa pero no habrá descargas. Las llaves se guardan en el comprobante:
+El paquete se guarda en un bucket privado compatible con S3. Si falta alguna variable de storage, la emisión continúa pero no habrá descargas. Las llaves quedan registradas en el comprobante:
 
 ```ini
 NEON_OBJECT_BUCKET=...
@@ -83,8 +76,7 @@ AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 ```
 
-Las credenciales se leen solo en el backend y nunca se envían al navegador. Las llaves son
-deterministas: `cpe/{ruc}/{anio}/{mes}/{serie}-{numero[8]}.xml`, `.zip` y `-cdr.xml`.
+Estas credenciales se leen solo en el backend y nunca llegan al navegador. Las llaves son deterministas: `cpe/{ruc}/{anio}/{mes}/{serie}-{numero[8]}.xml`, `.zip` y `-cdr.xml`.
 
 ## Variables relevantes
 
