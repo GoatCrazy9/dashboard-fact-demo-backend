@@ -41,3 +41,15 @@ services:
         value: desactivado
       - key: SUNAT_TIMEOUT_MS
         value: '30000'
+
+      # Object Storage demo para XML/ZIP/CDR (SUNAT sigue en modo local)
+      - key: NEON_OBJECT_BUCKET
+        sync: false
+      - key: AWS_ENDPOINT_URL_S3
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
